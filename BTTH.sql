@@ -190,3 +190,24 @@ select mh.TENMH,sum(case when kq.DIEM >= 5 then 1 else 0 end) as 'Dau',sum(case 
 from KETQUA kq,DMMH mh
 where kq.MAMH = mh.MAMH and kq.LANTHI = 1
 group by kq.MAMH,mh.TENMH
+
+--BTH 5
+
+--1.1
+select year(sv.NGAYSINH) as Nam
+from DMSV sv
+group by year(sv.NGAYSINH)
+having count(sv.MASV) = 2
+
+--1.2
+select NOISINH
+from DMSV
+group by NOISINH
+having count(MASV) >= 2;
+
+--1.3
+select mh.TENMH,kq.MAMH,count(distinct kq.MASV) as Sl
+from KETQUA kq,DMMH mh
+where kq.MAMH = mh.MAMH
+group by kq.MAMH,mh.TENMH
+having count(distinct kq.MASV) >= 3
