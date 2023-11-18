@@ -57,10 +57,9 @@ where mh.MAMH = k.MAMH
 group by mh.MAMH,mh.TENMH
 
 --3.5
-select count(distinct kq.MASV) as slsv,mh.TENMH
-from DMMH mh,KETQUA kq,DMSV sv
-where kq.MAMH = mh.MAMH
-group by kq.MAMH,mh.TENMH
+select kq.MASV ,count(distinct kq.MAMH) as [So luong]
+from KETQUA kq
+group by kq.MASV
 
 --3.6
 select max(HOCBONG) as HocBong,k.TENKHOA
