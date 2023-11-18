@@ -7,9 +7,7 @@ from DMSV
 where NOISINH = N'Hà Nội' and MONTH(NGAYSINH) = 2
 
 --1.2
-select HOSV + ' ' + TENSV,
-		Tuoi = YEAR(GETDATE()) - YEAR(NGAYSINH),
-		HOCBONG
+select HOSV + ' ' + TENSV,Tuoi = YEAR(GETDATE()) - YEAR(NGAYSINH),HOCBONG
 from DMSV
 where year(getdate()) - year(NGAYSINH) >= 20;
 
@@ -24,15 +22,11 @@ from DMSV
 where year(NGAYSINH) = 1990 and (datepart("q",NGAYSINH) = 1);
 
 --2.1
-select MASV,PHAI,MAKHOA,
-		MUCHOCBONG = case when HOCBONG > 150000 then 'Cao'
-		else 'Trung binh' end
+select MASV,PHAI,MAKHOA,MUCHOCBONG = case when HOCBONG > 150000 then 'Cao'else 'Trung binh' end
 from DMSV
 
 --2.2
-select sv.HOSV + ' ' + sv.TENSV as HOTENSV,mh.MAMH,k.LANTHI,k.DIEM,
-       ketqua = case when k.DIEM < 5
-	   then 'Truot' else 'Dau' end
+select sv.HOSV + ' ' + sv.TENSV as HOTENSV,mh.MAMH,k.LANTHI,k.DIEM,ketqua = case when k.DIEM < 5 then 'Truot' else 'Dau' end
 from DMSV sv,DMMH mh,KETQUA k
 where sv.MASV = k.MASV and k.MAMH = mh.MAMH
 
@@ -68,8 +62,7 @@ where k.MAKHOA = sv.MAKHOA
 group by k.TENKHOA,sv.MAKHOA
 
 --3.7
-select sum(case when PHAI = 0 then 1 else 0 end) as SVNam,
-		sum(case when PHAI = 1 then 1 else 0 end) as SVNu
+select sum(case when PHAI = 0 then 1 else 0 end) as SVNam, sum(case when PHAI = 1 then 1 else 0 end) as SVNu
 from DMSV;
 
 --3.8
@@ -78,8 +71,7 @@ from DMSV sv
 group by YEAR(GETDATE()) - YEAR(NGAYSINH)
 
 --3.9
-select k.MAMH,mh.TENMH,sum(case when k.DIEM < 5 then 1 else 0 end) as 'Rot',
-		sum(case when k.DIEM >= 5 then 1 else 0 end) as 'Dau'
+select k.MAMH,mh.TENMH,sum(case when k.DIEM < 5 then 1 else 0 end) as 'Rot',sum(case when k.DIEM >= 5 then 1 else 0 end) as 'Dau'
 from KETQUA k,DMMH mh
 where k.MAMH = mh.MAMH and k.LANTHI = 1
 group by k.MAMH,mh.TENMH
