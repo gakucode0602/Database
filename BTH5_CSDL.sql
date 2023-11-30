@@ -115,9 +115,10 @@ where kq.MASV = sv.MASV and kq.LANTHI = 2 and kq.MAMH = '01' and kq.DIEM = (sele
 --2.7
 select sv.*,kq.DIEM,kq.LANTHI
 from DMSV sv,KETQUA kq
-where sv.MASV = kq.MASV and kq.LANTHI = 2 and kq.MAMH = '01' and kq.DIEM > (select max(kq.DIEM) from KETQUA kq where kq.MAMH = '01' and kq.LANTHI = 1)
+where sv.MASV = kq.MASV and kq.LANTHI = 2 and kq.MAMH = '01' and kq.DIEM > all (select kq.DIEM
+from KETQUA kq where kq.MAMH = '01' and kq.LANTHI = 1)
 
 --2.8
 select *
 from DMSV
-where HOCBONG > (select max(HOCBONG) from DMSV where MAKHOA = 'AV')
+where HOCBONG > all (select HOCBONG from DMSV where MAKHOA = 'AV')
