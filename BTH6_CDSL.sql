@@ -37,8 +37,6 @@ kq1.MASV = sv.MASV and
 kq1.MAMH = mh.MAMH and
 kq1.DIEM >= all(select kq2.DIEM from KETQUA kq2 where kq1.MAMH = kq2.MAMH and kq2.MASV = kq1.MASV)
 
-
-
 --1.6
 select kq1.MAMH,count(distinct kq1.MASV) as sl,mh.TENMH
 from KETQUA kq1,DMMH mh
