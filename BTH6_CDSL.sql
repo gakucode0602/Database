@@ -52,16 +52,16 @@ group by sv1.MAKHOA
 order by count(sv1.MASV) asc
 
 --1.8
-select MAKHOA
-from DMSV
-where HOCBONG > 0
-group by MAKHOA
-having count(MASV) >= all(select count(MASV) from DMSV where HOCBONG > 0 group by MAKHOA)
-UNION
-select MAKHOA
-from DMSV
-group by MAKHOA
-having MAKHOA NOT IN (select MAKHOA from DMSV where HOCBONG > 0)
+select sv1.MAKH,sum(case when sv1.HOCBONG > 0 then 1 else 0 end) SLHB
+from DMSV sv1
+where sv1.HOCBONG > 0
+group by sv1.MAKH
+having sum(case when HOCBONG > 0 then 1 else 0 end) >= all(select sum(case when sv1.HOCBONG > 0 then 1 else 0 end) SLHB from DMSV sv1 where sv1.HOCBONG > 0 group by sv1.MAKH)
+union
+select sv2.MAKH,sum(case when sv2.HOCBONG = 0 then 0 else 1 end) SLHB
+from DMSV sv2
+group by sv2.MAKH
+having sum(case when sv2.HOCBONG = 0 then 0 else 1 end) = 0
 
 --1.9
 select MAMH,count(MASV) as SL
