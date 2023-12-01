@@ -61,7 +61,11 @@ union
 select sv2.MAKH,sum(case when sv2.HOCBONG = 0 then 0 else 1 end) SLHB
 from DMSV sv2
 group by sv2.MAKH
-having sum(case when sv2.HOCBONG = 0 then 0 else 1 end) = 0
+having sum(case when sv2.HOCBONG = 0 then 0 else 1 end) <= all(
+select sum(case when sv2.HOCBONG = 0 then 0 else 1 end) SLHB
+from DMSV sv2
+group by sv2.MAKH
+)
 
 --1.9
 select MAMH,count(MASV) as SL
