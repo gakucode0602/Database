@@ -497,15 +497,16 @@ or (kq.DIEM < 5 and kq.LANTHI = 2)
 --2.1
 select *
 from DMMH k1
-where not exists (select * -- create the table that exists a student 
-                           -- that doesn't learn any subject
-                           -- -> if any students exist in this table which means that there is a subject is not learned by
-                           --    all student
+where not exists (select * 
                 from DMSV s 
-                where exists (select * -- create the table that consists student which is actually learning
+                where not exists (select * -- create the table that consists student which is actually learning
                                  from KETQUA k2
                                   where k2.MASV = s.MASV
-                                  /*and k2.MAMH = k1.MAMH)*/))
+                                  and k2.MAMH = k1.MAMH))
+-- create the table that exists a student 
+-- that doesn't learn any subject
+-- -> if any students exist in this table which means that there is a subject is not learned by
+--    all student
 
 
 --2.2
@@ -517,8 +518,55 @@ select distinct kq1.MASV,kq1.MAMH from KETQUA kq1 where kq1.MASV <> 'A02' and no
                                                               where kq.MASV = 'A02' and kq.MAMH = mh.MAMH))
 
 --2.3
-select * from DMSV sv1 where sv1.MASV <> 'A02' and not exists (select *
-                                                               from KETQUA kq1
-                                                               where not exists (select *
-                                                                                 from KETQUA kq2
-                                                                                 where kq1.MAMH = kq2.MAMH and kq2.MASV = 'A02'))
+select * 
+from DMSV sv1 
+where sv1.MASV <> 'A02' and not exists (select *
+                                        from KETQUA kq1
+                                        where not exists (select *
+                                                          from KETQUA kq2
+                                                          where kq1.MAMH = kq2.MAMH and kq2.MASV = 'A02'))
+
+-- BTH 8:
+-- 1.1
+
+create table SinhVien_KetQua(
+    MASV nchar(3),
+    HOSV nvarchar(30) null,
+    TENSV nvarchar(10) null,
+    SoMonHoc int
+);
+insert into SinhVien_KetQua(MASV,HOSV,TENSV,SoMonHoc)
+       select s.MASV,HOSV,TENSV,count(distinct MAMH)
+       from DMSV s,KETQUA k
+       where s.MASV = k.MASV
+       group by s.MASV,HOSV,TENSV
+
+--1.2
+alter table DMKHOA
+add SISO int;
+
+update DMKHOA
+set SISO = (select count(*)
+            from DMSV
+            where MAKHOA = 'VL')
+where MAKHOA = 'VL'
+
+-- 1.3
+alter table KETQUA
+add HOCBONG int null;
+
+update KETQUA
+set HOCBONG = 0
+where MASV in (select kq1.MASV
+               from KETQUA kq1
+               where kq1.DIEM < 5 and kq1.LANTHI = 1
+               group by kq1.MASV
+               having count(kq1.MAMH) >= 2)
+
+--1.4
+
+
+select * from DMSV
+select * from KETQUA
+select * from DMKHOA
+select * from DMMH
