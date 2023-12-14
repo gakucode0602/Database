@@ -77,23 +77,26 @@ where not exists (select * -- create the table that exists a student
                            -- -> if any students exist in this table which means that there is a subject is not learned by
                            --    all student
                 from DMSV s 
-                where exists (select * -- create the table that consists student which is actually learning
-                                 from KETQUA k2
+                where not exists (select * -- create the table that consists student which is actually learning
+                                  from KETQUA k2
                                   where k2.MASV = s.MASV
-                                  /*and k2.MAMH = k1.MAMH)*/))
+                                  and k2.MAMH = k1.MAMH))
 
 
 --2.2
-select distinct kq1.MASV,kq1.MAMH from KETQUA kq1 where kq1.MASV <> 'A02' and not exists(select mh.*
+select kq1.MASV,kq1.MAMH from KETQUA kq1 where kq1.MASV <> 'A02' and not exists
+                                             (select mh.*
                                               from DMMH mh
                                               where mh.MAMH = kq1.MAMH
-                                              and not exists (select * 
-                                                              from KETQUA kq 
+                                              and not exists (select *
+                                                              from KETQUA kq
                                                               where kq.MASV = 'A02' and kq.MAMH = mh.MAMH))
 
 --2.3
 select * from DMSV sv1 where sv1.MASV <> 'A02' and not exists (select *
                                                                from KETQUA kq1
-                                                               where not exists (select *
+                                                               where exists (select *
                                                                                  from KETQUA kq2
                                                                                  where kq1.MAMH = kq2.MAMH and kq2.MASV = 'A02'))
+
+                                                                                            
