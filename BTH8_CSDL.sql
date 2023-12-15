@@ -1,3 +1,5 @@
+-- BTH 8
+--1.1
 create table SinhVien_KetQua(
     MASV nchar(3),
     HOSV nvarchar(30) null,
