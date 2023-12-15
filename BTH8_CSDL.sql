@@ -1,4 +1,6 @@
 -- BTH 8
+use QLDIEM
+go
 --1.1
 create table SinhVien_KetQua(
     MASV nchar(3),
@@ -26,7 +28,7 @@ where MAKHOA = 'VL'
 alter table KETQUA
 add HOCBONG int null;
 
-update KETQUA
+update DMSV
 set HOCBONG = 0
 where MASV in (select kq1.MASV
                from KETQUA kq1
@@ -34,19 +36,22 @@ where MASV in (select kq1.MASV
                group by kq1.MASV
                having count(kq1.MAMH) >= 2)
 
+select * from DMSV
+
 --1.4
 update KETQUA
 set DIEM = least(DIEM + 1,5)
 where LANTHI = 2 and DIEM < 5
 
 --1.5
-update KETQUA
+update DMSV
 set HOCBONG = HOCBONG + 1000000
 where MASV in (select kq1.MASV
                from KETQUA kq1
                where LANTHI = 1 and kq1.MASV not in (select kq2.MASV from KETQUA kq2 where kq2.LANTHI = 1 and kq2.DIEM < 5 and kq1.MASV = kq2.MASV)
                group by kq1.MASV
                having avg(kq1.DIEM) >= 7)
+
 
 --1.6
 delete from DMSV
