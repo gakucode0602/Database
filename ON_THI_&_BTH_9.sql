@@ -342,4 +342,146 @@ join THANNHAN tn
 on nv.MANV = tn.MANV
 where nv.NGSINH = tn.NGSINH
 
--- 
+-- 30
+select nv.HONV + ' ' + nv.TENDEM + ' ' +nv.TEN as HO_TEN,nv.LUONG,nv.PHONG
+from NHANVIEN nv
+where nv.PHONG = 4 or nv.LUONG > 35000
+
+-- 31
+select avg(nv.LUONG) as Luong_Greater_t10
+from NHANVIEN nv 
+join PHANCONG pc 
+on pc.MANV = nv.MANV
+where pc.SOGIO > 10
+
+-- 32
+select pb.TENPB, sum(nv.LUONG) as Tong_luong
+from NHANVIEN nv 
+join PHONGBAN pb
+on nv.PHONG = pb.MAPB
+group by pb.TENPB
+
+-- 33
+select max(LUONG) as Luong_cao_nhat
+from NHANVIEN
+
+-- 34
+select count(tn.MANV) as So_than_nhan
+from THANNHAN tn 
+join NHANVIEN nv 
+on tn.MANV = nv.MANV
+where nv.HONV = 'Nguyen' and nv.TENDEM = 'Bao' and nv.TEN = 'Hung'
+
+-- 35
+select *
+from NHANVIEN
+where MANV not in (select pc.MANV from PHANCONG pc)
+
+-- 36
+select pb.TENPB, count(nv.MANV) as SLNV,sum(nv.LUONG) as Tong_Luong
+from NHANVIEN nv 
+join PHONGBAN pb
+on nv.PHONG = pb.MAPB
+group by pb.TENPB
+
+-- 37
+select pb.TENPB,count(nv.MANV) as SLNV,avg(nv.LUONG) as Luong_TB
+from NHANVIEN nv 
+join PHONGBAN pb 
+on nv.PHONG = pb.MAPB
+group by pb.TENPB
+
+-- 38
+select pb.TENPB,avg(nv.LUONG) as Luong_TB
+from NHANVIEN nv 
+join PHONGBAN pb 
+on nv.PHONG = pb.MAPB
+group by pb.TENPB
+having avg(nv.LUONG) > 30000
+
+-- 39
+select tn1.MANV
+from THANNHAN tn1
+group by tn1.MANV
+having count(tn1.MANV) >= all(select count(tn2.MANV) from THANNHAN tn2 group by tn2.MANV)
+
+-- 40
+select *
+from NHANVIEN
+where MANV in (
+    select tn1.MANV
+    from THANNHAN tn1
+    group by tn1.MANV
+    having count(tn1.MANV) >= all(select count(tn2.MANV) from THANNHAN tn2 group by tn2.MANV))
+
+-- 41
+select HONV + ' ' + TENDEM + ' ' + TEN as HO_TEN_NV
+from NHANVIEN
+where MANV not in (select pc.MANV from PHANCONG pc)
+
+-- 42
+select pb.TENPB,count(nv.MANV) as SLNV
+from PHONGBAN pb 
+join NHANVIEN nv 
+on nv.PHONG = pb.MAPB
+group by pb.TENPB
+having count(nv.MANV) > 3
+
+-- 43 ????
+select * from DUAN
+select * from PHONGBAN
+select * from DIADIEM_PHONG
+select * from PHANCONG
+select * from NHANVIEN
+
+
+-- 44
+select pb.MAPB,count(nv.MANV) as SLNV
+from PHONGBAN pb 
+join NHANVIEN nv 
+on pb.MAPB = nv.PHONG
+group by pb.MAPB
+having sum(nv.LUONG) > 30000 and count(nv.MANV) >= 3
+
+-- 45
+select  nv.HONV + ' ' + nv.TENDEM + ' ' +nv.TEN as HO_TEN,sum(pc.SOGIO) as Tong_Gio
+from NHANVIEN nv
+join PHANCONG pc
+on nv.MANV = pc.MANV
+group by nv.HONV + ' ' + nv.TENDEM + ' ' +nv.TEN
+having count(nv.MANV) >= 2
+order by nv.HONV + ' ' + nv.TENDEM + ' ' +nv.TEN asc
+
+-- 46
+select nv.HONV + ' ' + nv.TENDEM + ' ' + nv.TEN as HO_TEN,BO_PHAN = case when nv.MANV = pb.TRPHONG then pb.TENPB else NULL end
+from NHANVIEN nv
+join PHONGBAN pb
+on nv.PHONG = pb.MAPB
+
+-- 47
+select da.TENDA,sum(pc.SOGIO) as Tong_Thoi_Gian
+from DUAN da 
+join PHANCONG pc 
+ON da.MADA = pc.MADA
+group by da.TENDA
+
+-- 48
+select da.MADA,pb.MAPB
+from DUAN da
+join PHONGBAN pb 
+on da.PHONGQL = pb.MAPB
+where da.DIADIEM = 'Phu Nhuan'
+
+-- 49
+select nv.HONV + ' ' + nv.TENDEM + ' ' + nv.TEN as HO_TEN,nv.NGSINH,nv.DIACHI
+from PHONGBAN pb 
+join NHANVIEN nv  
+on nv.MANV = pb.TRPHONG
+
+-- 50
+select nv.HONV + ' ' + nv.TENDEM + ' ' + nv.TEN as HO_TEN
+from NHANVIEN nv,PHANCONG pc,DUAN da 
+where nv.MANV = pc.MANV and nv.PHONG = da.PHONGQL and nv.PHONG = 5 and pc.SOGIO > 10 and da.TENDA = 'San pham X'
+
+
+
