@@ -156,9 +156,6 @@ group by p.CategoryID
 having avg(p.UnitPrice) >= 30
 
 -- 26
-select *
-from Products
-
 select p.CategoryID,avg(p.UnitPrice) as Giatrungbinh
 from Products p
 where p.UnitPrice > 30
