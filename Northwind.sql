@@ -1,6 +1,9 @@
 use Northwind
 go
 
+
+-- BTH 2
+
 -- 1
 -- Decartes
 select c.*,o.*
@@ -171,7 +174,8 @@ on  o.ProductID = p.ProductID
 
 -- 28
 
-select c.CompanyName,o.Freight,p.UnitPrice * od.Quantity * (1 - od.Discount) as Sales_Total ,o.Freight /  (p.UnitPrice * od.Quantity * (1 - od.Discount)) as [Percent]
+select c.CompanyName,o.Freight,p.UnitPrice * od.Quantity * (1 - od.Discount) as Sales_Total ,
+       o.Freight /  (p.UnitPrice * od.Quantity * (1 - od.Discount)) as [Percent]
 from Customers c
 join Orders o
 on c.CustomerID = o.CustomerID
@@ -179,3 +183,79 @@ join [Order Details] od
 on od.OrderID = o.OrderID 
 join Products p 
 on p.ProductID = od.ProductID
+
+-- BTH 3
+
+-- 1 / Make Table
+select * from Customers
+
+-- 3.1
+select *
+into CacKhachHangMy
+from Customers 
+where Country  = 'USA'
+
+select * from CacKhachHangMy
+select * from Orders
+select * from [Order Details]
+
+-- 3.2
+select top 5 e.EmployeeID,e.FirstName + ' ' + e.LastName as Name,count(o.EmployeeID) as Total_Orders
+into Tim5NhanVienGioi
+from Orders o 
+join Employees e 
+on o.EmployeeID = e.EmployeeID
+group by e.EmployeeID,e.FirstName + ' ' + e.LastName
+order by count(o.EmployeeID) desc
+
+select * from Tim5NhanVienGioi
+
+-- 3.3
+select top 10 c.CustomerID,c.CompanyName,c.Address + ' ' + c.City + ' ' + c.Country as Address,count(o.CustomerID) as Total_Orders
+into Tim10KhachHang
+from Customers c
+join Orders o
+on c.CustomerID = o.CustomerID
+group by c.CustomerID,c.CompanyName,c.Address + ' ' + c.City + ' ' + c.Country
+order by count(o.CustomerID) desc
+
+select * from Tim10KhachHang
+
+-- 3.4
+select * from Products
+
+select top 5 o.ShipCountry--,count(od.ProductID) as Total_Products
+into TimTop5QGMuaHang
+from Orders o 
+join [Order Details] od 
+on o.OrderID = od.OrderID
+group by o.ShipCountry
+order by count(od.ProductID) desc
+
+
+
+-- 3.5
+select top 5 o.ShipCountry--,count(od.ProductID) as Total_Products
+into Tim5QGItMuaHang
+from Orders o 
+join [Order Details] od 
+on o.OrderID = od.OrderID
+group by o.ShipCountry
+order by count(od.ProductID) asc
+
+select * from Tim5QGItMuaHang
+
+-- 2 / update table
+-- 1
+update Customers
+set Country = N'Mỹ'
+where Country = 'USA'
+select * from Customers
+
+-- 2
+update Customers
+set Country = (case when Country = 'Germany' then N'Đức' when Country = 'France' then N'Pháp' end)
+where Country in ('Germany','France')
+
+-- 3
+
