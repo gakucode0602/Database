@@ -64,8 +64,6 @@ use AdventureWorks2022
 go
 
 -- 2.1
-select * from Sales.SalesOrderHeader
-
 select s.SalesOrderID,s.OrderDate,Subtotal = sum(so.OrderQty * so.UnitPrice)
 from Sales.SalesOrderHeader s
 join Sales.SalesOrderDetail so 
@@ -103,5 +101,8 @@ on ss.SalesOrderID = sh.SalesOrderID
 where month(sh.OrderDate) = 7 and year(sh.OrderDate) = 2008
 group by ss.ProductID,p.Name
 having sum(ss.OrderQty) > 100
+<<<<<<< HEAD
 
 select * from Person.Person
+=======
+>>>>>>> 73d3f669ed74c5604e12f0314aea205e1942b207
