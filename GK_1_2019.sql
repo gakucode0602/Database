@@ -60,48 +60,45 @@ values
 select * from ThueBang
 
 -- Cau 2
-use AdventureWorks2022
+use AdventureWorks2019
 go
 
--- 2.1
+--2.1
+select * from Sales.SalesOrderDetail
 select * from Sales.SalesOrderHeader
 
-select s.SalesOrderID,s.OrderDate,Subtotal = sum(so.OrderQty * so.UnitPrice)
-from Sales.SalesOrderHeader s
-join Sales.SalesOrderDetail so 
-on so.SalesOrderID = s.SalesOrderID
-where year(s.OrderDate) = 2008 and month(s.OrderDate) = 6
-group by s.SalesOrderID,s.OrderDate
-having sum(so.OrderQty * so.UnitPrice) > 70000
+select ss.SalesOrderID,sh.OrderDate,SubTotal = sum(ss.OrderQty * ss.UnitPrice)
+from Sales.SalesOrderDetail ss
+join Sales.SalesOrderHeader sh
+on ss.SalesOrderID = sh.SalesOrderID
+where month(sh.OrderDate) = 6 and year(sh.OrderDate) = 2011
+group by ss.SalesOrderID,sh.OrderDate
+having sum(ss.OrderQty * ss.UnitPrice) > 70000
 
 -- 2.2
-select * from HumanResources.Employee
-
-select e.JobTitle,CountOfPerson = count(*)
-from HumanResources.Employee e
-group by e.JobTitle
-having count(e.BusinessEntityID) > 20
+select h.JobTitle,count(h.BusinessEntityID) as CountOfPerson
+from HumanResources.Employee h
+group by h.JobTitle
+having count(h.BusinessEntityID) > 20
 
 -- 2.3
-select ss.ProductID,p.Name,CountOrderQty = sum(ss.OrderQty),Year = year(sh.OrderDate)
-from Sales.SalesOrderDetail ss 
-join Production.Product p 
-on p.ProductID = ss.ProductID
-join Sales.SalesOrderHeader sh
-on ss.SalesOrderID = sh.SalesOrderID
+select p.ProductID,p.Name,sum(sd.OrderQty) as CountOfOrderQty,year(sh.OrderDate) as Year
+from Production.Product p 
+join Sales.SalesOrderDetail sd 
+on sd.ProductID = p.ProductID
+join Sales.SalesOrderHeader sh 
+on sd.SalesOrderID = sh.SalesOrderID
 where p.Name like 'Bike%' or p.Name like 'Sport%'
-group by ss.ProductID,p.Name,year(sh.OrderDate)
-having sum(ss.OrderQty) > 500
+group by p.ProductID,p.Name,year(sh.OrderDate)
+having sum(sd.OrderQty) > 500
 
 -- 2.4
-select p.Name,ss.ProductID
-from Sales.SalesOrderDetail ss 
-join Production.Product p 
-on p.ProductID = ss.ProductID
-join Sales.SalesOrderHeader sh
-on ss.SalesOrderID = sh.SalesOrderID
+select p.Name,p.ProductID
+from Production.Product p 
+join Sales.SalesOrderDetail sd 
+on sd.ProductID = p.ProductID
+join Sales.SalesOrderHeader sh 
+on sd.SalesOrderID = sh.SalesOrderID
 where month(sh.OrderDate) = 7 and year(sh.OrderDate) = 2008
-group by ss.ProductID,p.Name
-having sum(ss.OrderQty) > 100
-
-select * from Person.Person
+group by p.Name,p.ProductID
+having sum(sd.OrderQty) > 100
