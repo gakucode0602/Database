@@ -49,15 +49,16 @@ group by st.TerritoryID
 order by st.TerritoryID asc
 
 -- 2.2
-select pv.BusinessEntityID,pv.Name,ppv.ProductID,SumOfQty = sum(sd.OrderQty),SubTotal = sum(sd.OrderQty * sd.UnitPrice)
-from Purchasing.Vendor pv 
-join Purchasing.ProductVendor ppv
-on pv.BusinessEntityID = ppv.BusinessEntityID
-join Sales.SalesOrderDetail sd 
-on sd.ProductID = ppv.ProductID 
+
+select ppv.BusinessEntityID,pv.Name,ppv.ProductID,SumOfQty = sum(ppo.OrderQty),SubTotal = sum(ppo.OrderQty * ppo.UnitPrice)
+from Purchasing.ProductVendor ppv
+join Purchasing.Vendor pv 
+on ppv.BusinessEntityID = pv.BusinessEntityID
+join Purchasing.PurchaseOrderDetail ppo
+on ppv.ProductID = ppo.ProductID
 where pv.Name like '%Bicycles'
-group by pv.BusinessEntityID,pv.Name,ppv.ProductID
-having sum(sd.OrderQty * sd.UnitPrice) < 800000
+group by ppv.BusinessEntityID,pv.Name,ppv.ProductID
+having sum(ppo.OrderQty * ppo.UnitPrice) > 800000
 
 -- 2.3
 select hd.DepartmentID,hd.Name,avg(he.Rate) as AvgofRate
@@ -73,18 +74,19 @@ having avg(he.Rate) > 30
 select * from Sales.SalesOrderDetail
 
 select p.ProductID,p.Name
-from Production.Product p 
-join Sales.SalesOrderDetail sd 
+from Production.Product p
+join Sales.SalesOrderDetail sd
 on p.ProductID = sd.ProductID
-join Sales.SalesOrderHeader sh 
+join Sales.SalesOrderHeader sh
 on sh.SalesOrderID = sd.SalesOrderID
 where month(sh.OrderDate) = 7 and year(sh.OrderDate) = 2011
 group by p.ProductID,p.Name
-having count(sd.OrderQty) >=   all(select count(sd1.OrderQty)
-                                from Production.Product p1 
+having count(sd.OrderQty) >= (select top 1 count(sd1.OrderQty)
+                                from Production.Product p1
                                 join Sales.SalesOrderDetail sd1
                                 on p1.ProductID = sd1.ProductID
                                 join Sales.SalesOrderHeader sh1
                                 on sh1.SalesOrderID = sd1.SalesOrderID
                                 where month(sh1.OrderDate) = 7 and year(sh1.OrderDate) = 2011
-                                group by p1.ProductID,p1.Name)
+                                group by p1.ProductID,p1.Name
+                                order by count(sd1.OrderQty) desc)
