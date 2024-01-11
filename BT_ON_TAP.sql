@@ -10,7 +10,6 @@ where month(sh.OrderDate) = 6 and year(sh.OrderDate) = 2008
 group by sh.SalesOrderID,sh.OrderDate
 having sum(sd.OrderQty * sd.UnitPrice) > 70000
 
-
 -- 2 .
 -- TerritoryID : Là ID chỉ địa bàn lãnh thổ
 -- CustomerID : ID của khách hàng
@@ -56,7 +55,7 @@ select pp.ProductID,pp.Name,countOfOrderID = count(distinct ssd.SalesOrderID),Su
 from Sales.SalesOrderDetail ssd 
 join Sales.SalesOrderHeader ssh on ssd.SalesOrderID = ssh.SalesOrderID
 join Production.Product pp on ssd.ProductID = pp.ProductID
---where datepart("q",ssh.OrderDate) = 1 and year(ssh.OrderDate) = 2008
+where datepart("q",ssh.OrderDate) = 1 and year(ssh.OrderDate) = 2008
 group by pp.ProductID,pp.Name
 having sum(ssd.OrderQty * ssd.UnitPrice) > 10000 and count(distinct ssd.SalesOrderID) > 500
 
@@ -94,10 +93,9 @@ where p.ProductID in (
         select sd.ProductID
         from Sales.SalesOrderHeader sh 
         join Sales.SalesOrderDetail sd on sh.SalesOrderID = sd.SalesOrderID
-        --where month(sh.OrderDate) = 5 and year(sh.OrderDate) = 2014
+        where month(sh.OrderDate) = 5 and year(sh.OrderDate) = 2014
         group by sd.ProductID
         having count(distinct sd.SalesOrderID) > 100
-        --order by count(distinct sd.SalesOrderID) desc
 )
 
 -- 2
@@ -131,7 +129,7 @@ select pp.ProductID,pp.Name
 from Production.Product pp
 where pp.Name like 'Long-Sleeve Logo Jersey%' 
 and pp.ProductModelID in (
-    select *
+    select ppm.ProductModelID
     from Production.ProductModel ppm
     where ppm.Name like '%Long-Sleeve%'
 )

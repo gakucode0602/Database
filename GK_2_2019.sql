@@ -1,9 +1,7 @@
 -- Cau 1
 create database QLThuePhong
-
 use QLThuePhong
 go
-
 create table PHONG(
     MaPhong char(10) constraint pk_MaPhong primary key,
     SoGiuong int identity(1,1) unique,
@@ -49,10 +47,8 @@ group by c.TerritoryID
 -- 2.2
 select pv.BusinessEntityID,pv.Name,ppd.ProductID,SumOfQty = sum(ppd.OrderQty),SubTotal = sum(ppd.OrderQty * ppd.UnitPrice)
 from Purchasing.Vendor pv 
-join Purchasing.PurchaseOrderHeader pph
-on pv.BusinessEntityID = pph.VendorID
-join Purchasing.PurchaseOrderDetail ppd 
-on pph.PurchaseOrderID = ppd.PurchaseOrderID
+join Purchasing.PurchaseOrderHeader pph on pv.BusinessEntityID = pph.VendorID
+join Purchasing.PurchaseOrderDetail ppd on pph.PurchaseOrderID = ppd.PurchaseOrderID
 where pv.Name like '%Bicycles'
 group by pv.BusinessEntityID,pv.Name,ppd.ProductID
 having sum(ppd.OrderQty * ppd.UnitPrice) > 800000

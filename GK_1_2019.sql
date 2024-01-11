@@ -66,8 +66,7 @@ go
 --2.1
 select ss.SalesOrderID,sh.OrderDate,SubTotal = sum(ss.OrderQty * ss.UnitPrice)
 from Sales.SalesOrderDetail ss
-join Sales.SalesOrderHeader sh
-on ss.SalesOrderID = sh.SalesOrderID
+join Sales.SalesOrderHeader sh on ss.SalesOrderID = sh.SalesOrderID
 where month(sh.OrderDate) = 6 and year(sh.OrderDate) = 2011
 group by ss.SalesOrderID,sh.OrderDate
 having sum(ss.OrderQty * ss.UnitPrice) > 70000
