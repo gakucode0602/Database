@@ -19,9 +19,9 @@ select st.TerritoryID,count(sc.CustomerID) as CountOfCust,sum(sd.OrderQty * sd.U
 from Sales.SalesTerritory st 
 join Sales.Customer sc 
 on st.TerritoryID = sc.TerritoryID
-join Sales.SalesOrderHeader sh 
+join Sales.SalesOrderHeader sh
 on sc.CustomerID = sh.CustomerID
-join Sales.SalesOrderDetail sd 
+join Sales.SalesOrderDetail sd
 on sh.SalesOrderID = sd.SalesOrderID
 where st.CountryRegionCode = 'US'
 group by st.TerritoryID

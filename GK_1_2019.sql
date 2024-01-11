@@ -15,8 +15,8 @@ create table BANG(
 
 create table KhachHang(
     MaKH int IDENTITY(1,1) constraint pk_MaKH primary key(MaKH),
-    TenKH nvarchar(50) unique,
-    DiaChi nvarchar(100),
+    TenKH nvarchar(50) not null,
+    DiaChi nvarchar(100) not null,
     SoDT nvarchar(12) unique,
     TheLoaiYT nvarchar(20),
     GhiChu nvarchar(MAX)
@@ -64,9 +64,6 @@ use AdventureWorks2019
 go
 
 --2.1
-select * from Sales.SalesOrderDetail
-select * from Sales.SalesOrderHeader
-
 select ss.SalesOrderID,sh.OrderDate,SubTotal = sum(ss.OrderQty * ss.UnitPrice)
 from Sales.SalesOrderDetail ss
 join Sales.SalesOrderHeader sh
@@ -84,21 +81,21 @@ having count(h.BusinessEntityID) > 20
 -- 2.3
 select p.ProductID,p.Name,sum(sd.OrderQty) as CountOfOrderQty,year(sh.OrderDate) as Year
 from Production.Product p 
-join Sales.SalesOrderDetail sd 
-on sd.ProductID = p.ProductID
-join Sales.SalesOrderHeader sh 
-on sd.SalesOrderID = sh.SalesOrderID
+join Sales.SalesOrderDetail sd on sd.ProductID = p.ProductID
+join Sales.SalesOrderHeader sh on sd.SalesOrderID = sh.SalesOrderID
 where p.Name like 'Bike%' or p.Name like 'Sport%'
 group by p.ProductID,p.Name,year(sh.OrderDate)
 having sum(sd.OrderQty) > 500
 
 -- 2.4
-select p.Name,p.ProductID
-from Production.Product p 
-join Sales.SalesOrderDetail sd 
-on sd.ProductID = p.ProductID
-join Sales.SalesOrderHeader sh 
-on sd.SalesOrderID = sh.SalesOrderID
-where month(sh.OrderDate) = 7 and year(sh.OrderDate) = 2008
-group by p.Name,p.ProductID
-having sum(sd.OrderQty) > 100
+select p.ProductID,p.Name
+from Production.Product p
+where p.ProductID in (
+    select sd.ProductID
+    from Sales.SalesOrderDetail sd
+    join Sales.SalesOrderHeader sh on sd.SalesOrderDetailID = sh.SalesOrderID
+    where month(sh.OrderDate) = 7 and year(sh.OrderDate) = 2008
+    group by sd.ProductID
+    having count(distinct sd.SalesOrderID) > 100
+)
+ 
