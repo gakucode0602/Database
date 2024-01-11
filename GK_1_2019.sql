@@ -88,14 +88,13 @@ group by p.ProductID,p.Name,year(sh.OrderDate)
 having sum(sd.OrderQty) > 500
 
 -- 2.4
-select p.ProductID,p.Name
+select p.Name, p.ProductID
 from Production.Product p
 where p.ProductID in (
-    select sd.ProductID
-    from Sales.SalesOrderDetail sd
-    join Sales.SalesOrderHeader sh on sd.SalesOrderDetailID = sh.SalesOrderID
-    where month(sh.OrderDate) = 7 and year(sh.OrderDate) = 2008
-    group by sd.ProductID
-    having count(distinct sd.SalesOrderID) > 100
+        select sd.ProductID
+        from Sales.SalesOrderHeader sh 
+        join Sales.SalesOrderDetail sd on sh.SalesOrderID = sd.SalesOrderID
+        where month(sh.OrderDate) = 7 and year(sh.OrderDate) = 2008
+        group by sd.ProductID
+        having count(distinct sd.SalesOrderID) > 100
 )
- 

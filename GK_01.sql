@@ -98,7 +98,7 @@ join Production.Product p
 on p.ProductID = ss.ProductID
 join Sales.SalesOrderHeader sh
 on ss.SalesOrderID = sh.SalesOrderID
-where month(sh.OrderDate) = 7 and year(sh.OrderDate) = 2008
+where month(sh.OrderDate) = 7 and year(sh.OrderDate) = 2011
 group by ss.ProductID,p.Name
 having sum(ss.OrderQty) > 100
 <<<<<<< HEAD

@@ -47,13 +47,15 @@ where st.CountryRegionCode = 'US'
 group by c.TerritoryID
 
 -- 2.2
-select ppv.BusinessEntityID,pv.Name,ppv.ProductID,SumOfQty = sum(ppo.OrderQty),SubTotal = sum(ppo.OrderQty * ppo.UnitPrice)
-from Purchasing.ProductVendor ppv
-join Purchasing.Vendor pv on ppv.BusinessEntityID = pv.BusinessEntityID
-join Purchasing.PurchaseOrderDetail ppo on ppv.ProductID = ppo.ProductID
+select pv.BusinessEntityID,pv.Name,ppd.ProductID,SumOfQty = sum(ppd.OrderQty),SubTotal = sum(ppd.OrderQty * ppd.UnitPrice)
+from Purchasing.Vendor pv 
+join Purchasing.PurchaseOrderHeader pph
+on pv.BusinessEntityID = pph.VendorID
+join Purchasing.PurchaseOrderDetail ppd 
+on pph.PurchaseOrderID = ppd.PurchaseOrderID
 where pv.Name like '%Bicycles'
-group by ppv.BusinessEntityID,pv.Name,ppv.ProductID
-having sum(ppo.OrderQty * ppo.UnitPrice) > 800000
+group by pv.BusinessEntityID,pv.Name,ppd.ProductID
+having sum(ppd.OrderQty * ppd.UnitPrice) > 800000
 
 -- 2.3
 select hd.DepartmentID,hd.Name,avg(he.Rate) as AvgofRate
